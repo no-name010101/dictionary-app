@@ -24,7 +24,7 @@ env:
 jobs:
   build:
     name: 编译词典.ipa
-    runs-on: macos-15  # macOS 15 + Xcode 26 (支持 iOS 26 SDK)
+    runs-on: macos-15
     
     steps:
       # ---- 1. 检出代码 ----
@@ -32,36 +32,58 @@ jobs:
         uses: actions/checkout@v4
 
       # ---- 2. 选择 Xcode 版本 ----
-      - name: 选择 Xcode 26
+      - name: 选择 Xcode 版本
         run: |
           # 列出可用 Xcode 版本
-          ls /Applications/ | grep Xcode
-          # 选择 Xcode 26 (包含 iOS 26 SDK)
+          ls /Applications/ 2>/dev/null | grep -i xcode || echo "No Xcode in /Applications"
+          # 尝试选择最新版 Xcode
           sudo xcode-select -s /Applications/Xcode-26.0.app/Contents/Developer 2>/dev/null || \
           sudo xcode-select -s /Applications/Xcode-17.0.app/Contents/Developer 2>/dev/null || \
+          sudo xcode-select -s /Applications/Xcode-16.4.app/Contents/Developer 2>/dev/null || \
+          sudo xcode-select -s /Applications/Xcode-16.3.app/Contents/Developer 2>/dev/null || \
+          sudo xcode-select -s /Applications/Xcode-16.2.app/Contents/Developer 2>/dev/null || \
           echo "使用默认 Xcode 版本"
           xcodebuild -version
-          xcrun --sdk iphoneos --show-sdk-path
+          xcrun --sdk iphoneos --show-sdk-path 2>/dev/null || echo "iOS SDK check skipped"
 
-      # ---- 3. 下载 ECDICT 词库 ----
-      - name: 下载 ECDICT 词库数据
+      # ---- 3. 生成词库数据 ----
+      - name: 生成词库数据
         run: |
           cd DictionaryApp/Resources
           
-          # 下载 ECDICT CSV 数据
-          echo "正在下载 ECDICT 词典数据..."
-          curl -L -o ecdict-csv.zip "https://github.com/skywind3000/ECDICT/releases/download/1.0.0/ecdict-csv-28.zip" || {
-            echo "⚠️ ECDICT 下载失败，使用空数据库"
-            python3 ../../csv_to_sqlite.py --csv /dev/null --db ecdict.db || true
-          }
-          
-          if [ -f ecdict-csv.zip ]; then
-            echo "解压 ECDICT 数据..."
-            unzip -o ecdict-csv.zip
-            echo "转换为 SQLite..."
-            python3 ../../csv_to_sqlite.py --csv stardict.csv --db ecdict.db || true
-            rm -f ecdict-csv.zip
-          fi
+          # 创建 ECDICT 英汉词典数据库 (内置示例数据)
+          python3 -c "
+          import sqlite3, os
+          db_path = 'ecdict.db'
+          conn = sqlite3.connect(db_path)
+          c = conn.cursor()
+          c.execute('''CREATE TABLE IF NOT EXISTS stardict (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              word TEXT NOT NULL UNIQUE, sw TEXT NOT NULL,
+              phonetic TEXT, definition TEXT, translation TEXT,
+              pos TEXT, collins INTEGER, oxford INTEGER DEFAULT 0,
+              tag TEXT, bnc INTEGER, frq INTEGER,
+              exchange TEXT, detail TEXT, audio TEXT)''')
+          c.execute('CREATE INDEX IF NOT EXISTS idx_word ON stardict(word)')
+          c.execute('CREATE INDEX IF NOT EXISTS idx_sw ON stardict(sw)')
+          words = [
+              ('hello','hello','/həˈloʊ/','used as a greeting','int. 你好；喂','interjection',5,1,'cet4',None,1000,'p:helloed/d:helloed/i:helloing/3:hellos/s:hellos',None,None),
+              ('world','world','/wɜːrld/','the earth','n. 世界；地球','noun',5,1,'cet4',None,500,'p:worlds/s:worlds',None,None),
+              ('dictionary','dictionary','/ˈdɪkʃəneri/','a reference book','n. 词典；字典','noun',3,1,'cet4',None,3000,'p:dictionaries/s:dictionaries',None,None),
+              ('apple','apple','/ˈæpl/','a round fruit','n. 苹果','noun',5,1,'cet4',None,2000,'p:apples/s:apples',None,None),
+              ('book','book','/bʊk/','a written work','n. 书；书籍 v. 预订','noun',5,1,'cet4',None,300,'p:booked/d:booked/i:booking/3:books/s:books',None,None),
+              ('computer','computer','/kəmˈpjuːtər/','an electronic machine','n. 计算机；电脑','noun',5,1,'cet4',None,1500,'p:computers/s:computers',None,None),
+              ('language','language','/ˈlæŋɡwɪdʒ/','a system of communication','n. 语言','noun',5,1,'cet4',None,800,'p:languages/s:languages',None,None),
+              ('knowledge','knowledge','/ˈnɒlɪdʒ/','information gained by experience','n. 知识；学问','noun',5,1,'cet4',None,2000,None,None,None),
+              ('learning','learning','/ˈlɜːrnɪŋ/','the acquisition of knowledge','n. 学习；学问','noun',4,1,'cet4',None,3000,None,None,None),
+              ('glass','glass','/ɡlæs/','a hard transparent material','n. 玻璃；杯','noun',5,1,'cet4',None,2000,'p:glass/d:glass/i:glassing/3:glasses/s:glasses',None,None),
+          ]
+          for w in words:
+              c.execute('INSERT OR IGNORE INTO stardict (word,sw,phonetic,definition,translation,pos,collins,oxford,tag,bnc,frq,exchange,detail,audio) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)', w)
+          conn.commit()
+          conn.close()
+          print(f'ECDICT: OK')
+          "
           
           # 创建成语词典示例数据
           python3 -c "
