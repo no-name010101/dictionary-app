@@ -8,7 +8,8 @@
 import Foundation
 import AVFoundation
 
-class PronunciationService {
+@MainActor
+class PronunciationService: Sendable {
     static let shared = PronunciationService()
     
     private let synthesizer = AVSpeechSynthesizer()
