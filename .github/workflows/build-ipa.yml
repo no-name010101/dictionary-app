@@ -88,51 +88,52 @@ jobs:
           PYEOF
           
           # Create idiom dictionary
-          python3 -c "
-          import sqlite3, os
-          db_path = 'idiom.db'
-          if not os.path.exists(db_path) or os.path.getsize(db_path) < 1000:
-              conn = sqlite3.connect(db_path)
-              c = conn.cursor()
-              c.execute('CREATE TABLE IF NOT EXISTS idiom (word TEXT PRIMARY KEY, pinyin TEXT, definition TEXT, origin TEXT, example TEXT)')
-              idioms = [
-                  ('一心一意', 'yī xīn yī yì', '形容做事专心，一点也不马虎', '《三国志》', '他一心一意地钻研学问'),
-                  ('画龙点睛', 'huà lóng diǎn jīng', '比喻在关键处加上精辟的话', '唐·张彦远', '这句话起到了画龙点睛的作用'),
-                  ('守株待兔', 'shǒu zhū dài tù', '比喻不主动努力，而存侥幸心理', '《韩非子》', '不要守株待兔，要主动出击'),
-              ]
-              c.executemany('INSERT OR IGNORE INTO idiom VALUES (?,?,?,?,?)', idioms)
-              conn.commit()
-              conn.close()
-          "
+          python3 << 'PYEOF'
+          import sqlite3
+          conn = sqlite3.connect('idiom.db')
+          c = conn.cursor()
+          c.execute('CREATE TABLE IF NOT EXISTS idiom (word TEXT PRIMARY KEY, pinyin TEXT, definition TEXT, origin TEXT, example TEXT)')
+          idioms = [
+              ('一心一意', 'yī xīn yī yì', '形容做事专心，一点也不马虎', '《三国志》', '他一心一意地钻研学问'),
+              ('画龙点睛', 'huà lóng diǎn jīng', '比喻在关键处加上精辟的话', '唐·张彦远', '这句话起到了画龙点睛的作用'),
+              ('守株待兔', 'shǒu zhū dài tù', '比喻不主动努力，而存侥幸心理', '《韩非子》', '不要守株待兔，要主动出击'),
+          ]
+          c.executemany('INSERT OR IGNORE INTO idiom VALUES (?,?,?,?,?)', idioms)
+          conn.commit()
+          conn.close()
+          print('Idiom: OK')
+          PYEOF
           
-          # 创建新华字典示例数据
-          python3 -c "
-          import sqlite3, os
-          db_path = 'xinhua.db'
-          if not os.path.exists(db_path) or os.path.getsize(db_path) < 1000:
-              conn = sqlite3.connect(db_path)
-              c = conn.cursor()
-              c.execute('CREATE TABLE IF NOT EXISTS xinhua (character TEXT PRIMARY KEY, pinyin TEXT, radical TEXT, strokes INTEGER, definition TEXT, variants TEXT)')
-              chars = [
-                  ('词', 'cí', '讠', 7, '语言里最小的可以独立运用的单位', ''),
-                  ('典', 'diǎn', '八', 8, '可以作为依据的书籍', ''),
-                  ('学', 'xué', '子', 8, '效法，获得知识', ''),
-              ]
-              c.executemany('INSERT OR IGNORE INTO xinhua VALUES (?,?,?,?,?,?)', chars)
-              conn.commit()
-              conn.close()
-          "
+          # Create Xinhua dictionary
+          python3 << 'PYEOF'
+          import sqlite3
+          conn = sqlite3.connect('xinhua.db')
+          c = conn.cursor()
+          c.execute('CREATE TABLE IF NOT EXISTS xinhua (character TEXT PRIMARY KEY, pinyin TEXT, radical TEXT, strokes INTEGER, definition TEXT, variants TEXT)')
+          chars = [
+              ('词', 'cí', '讠', 7, '语言里最小的可以独立运用的单位', ''),
+              ('典', 'diǎn', '八', 8, '可以作为依据的书籍', ''),
+              ('学', 'xué', '子', 8, '效法，获得知识', ''),
+          ]
+          c.executemany('INSERT OR IGNORE INTO xinhua VALUES (?,?,?,?,?,?)', chars)
+          conn.commit()
+          conn.close()
+          print('Xinhua: OK')
+          PYEOF
           
-          echo "✅ 词库数据准备完成"
-          ls -lh *.db 2>/dev/null || echo "数据库文件列表"
+          echo "词库数据准备完成"
+          ls -lh *.db
 
       # ---- 4. 构建 Archive ----
       - name: 构建 Xcode Archive
         run: |
           set -o pipefail
           
+          # Verify project exists
+          ls -la DictionaryApp.xcodeproj/project.pbxproj || { echo "ERROR: project.pbxproj not found"; exit 1; }
+          
           xcodebuild archive \
-            -project DictionaryApp/$PROJECT \
+            -project DictionaryApp.xcodeproj \
             -scheme $SCHEME \
             -configuration Release \
             -archivePath build/DictionaryApp.xcarchive \
@@ -143,11 +144,13 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             DEVELOPMENT_TEAM="" \
             COMPILER_INDEX_STORE_ENABLE=NO \
-            | xcpretty || true
+            2>&1 | tee build/xcodebuild.log | xcpretty
 
       # ---- 5. 导出 IPA ----
       - name: 导出 词典.ipa
         run: |
+          mkdir -p build
+          
           # 创建导出选项
           cat > build/ExportOptions.plist << 'EOF'
           <?xml version="1.0" encoding="UTF-8"?>
