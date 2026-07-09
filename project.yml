@@ -1,0 +1,37 @@
+name: DictionaryApp
+options:
+  bundleIdPrefix: com.dictionary
+  deploymentTarget:
+    iOS: "26.0"
+  xcodeVersion: "26.0"
+  createIntermediateGroups: true
+  groupSortPosition: top
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    DEVELOPMENT_TEAM: ""
+    CODE_SIGN_IDENTITY: "-"
+    CODE_SIGN_STYLE: Manual
+    ENABLE_PREVIEWS: YES
+    GENERATE_INFOPLIST_FILE: YES
+    INFOPLIST_KEY_CFBundleDisplayName: "词典"
+    INFOPLIST_KEY_UIApplicationSceneManifest_Generation: YES
+    INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents: YES
+    INFOPLIST_KEY_UILaunchScreen_Generation: YES
+    INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone: "UIInterfaceOrientationPortrait"
+    TARGETED_DEVICE_FAMILY: 1
+targets:
+  DictionaryApp:
+    type: application
+    platform: iOS
+    sources:
+      - DictionaryApp
+    resources:
+      - DictionaryApp/Assets.xcassets
+      - DictionaryApp/Resources/ecdict.db
+      - DictionaryApp/Resources/idiom.db
+      - DictionaryApp/Resources/xinhua.db
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.dictionary.liquidglass
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
