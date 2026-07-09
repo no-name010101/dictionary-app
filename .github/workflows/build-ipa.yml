@@ -168,6 +168,16 @@ jobs:
       - name: 导出 词典.ipa
         run: |
           mkdir -p build
+          
+          # Debug: list archive structure
+          echo "=== Build directory contents ==="
+          find build -type f -o -type d | head -50
+          echo "=== Archive Products ==="
+          find build/DictionaryApp.xcarchive -name "*.app" 2>/dev/null || echo "No .app found in archive"
+          find build/DictionaryApp.xcarchive -name "Products" -type d 2>/dev/null || echo "No Products dir"
+          ls -la build/DictionaryApp.xcarchive/Products/ 2>/dev/null || echo "No Products dir in archive"
+          ls -la build/DictionaryApp.xcarchive/Products/Applications/ 2>/dev/null || echo "No Applications dir"
+          
           APP_PATH="build/DictionaryApp.xcarchive/Products/Applications/DictionaryApp.app"
           
           if [ -d "$APP_PATH" ]; then
