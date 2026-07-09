@@ -9,6 +9,7 @@
 import Foundation
 import SQLite3
 
+@MainActor
 class DatabaseService: ObservableObject {
     @Published var isDatabaseReady: Bool = false
     @Published var databaseStatus: DatabaseStatus = .notLoaded
