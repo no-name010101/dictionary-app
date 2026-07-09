@@ -51,11 +51,13 @@ jobs:
         run: |
           cd DictionaryApp/Resources
           
-          # 创建 ECDICT 英汉词典数据库 (内置示例数据)
-          python3 -c "
-          import sqlite3, os
-          db_path = 'ecdict.db'
-          conn = sqlite3.connect(db_path)
+          # Remove placeholder files
+          rm -f ecdict.db idiom.db xinhua.db
+          
+          # Create ECDICT English-Chinese dictionary database
+          python3 << 'PYEOF'
+          import sqlite3
+          conn = sqlite3.connect('ecdict.db')
           c = conn.cursor()
           c.execute('''CREATE TABLE IF NOT EXISTS stardict (
               id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -67,25 +69,25 @@ jobs:
           c.execute('CREATE INDEX IF NOT EXISTS idx_word ON stardict(word)')
           c.execute('CREATE INDEX IF NOT EXISTS idx_sw ON stardict(sw)')
           words = [
-              ('hello','hello','/həˈloʊ/','used as a greeting','int. 你好；喂','interjection',5,1,'cet4',None,1000,'p:helloed/d:helloed/i:helloing/3:hellos/s:hellos',None,None),
-              ('world','world','/wɜːrld/','the earth','n. 世界；地球','noun',5,1,'cet4',None,500,'p:worlds/s:worlds',None,None),
-              ('dictionary','dictionary','/ˈdɪkʃəneri/','a reference book','n. 词典；字典','noun',3,1,'cet4',None,3000,'p:dictionaries/s:dictionaries',None,None),
-              ('apple','apple','/ˈæpl/','a round fruit','n. 苹果','noun',5,1,'cet4',None,2000,'p:apples/s:apples',None,None),
-              ('book','book','/bʊk/','a written work','n. 书；书籍 v. 预订','noun',5,1,'cet4',None,300,'p:booked/d:booked/i:booking/3:books/s:books',None,None),
-              ('computer','computer','/kəmˈpjuːtər/','an electronic machine','n. 计算机；电脑','noun',5,1,'cet4',None,1500,'p:computers/s:computers',None,None),
-              ('language','language','/ˈlæŋɡwɪdʒ/','a system of communication','n. 语言','noun',5,1,'cet4',None,800,'p:languages/s:languages',None,None),
-              ('knowledge','knowledge','/ˈnɒlɪdʒ/','information gained by experience','n. 知识；学问','noun',5,1,'cet4',None,2000,None,None,None),
-              ('learning','learning','/ˈlɜːrnɪŋ/','the acquisition of knowledge','n. 学习；学问','noun',4,1,'cet4',None,3000,None,None,None),
-              ('glass','glass','/ɡlæs/','a hard transparent material','n. 玻璃；杯','noun',5,1,'cet4',None,2000,'p:glass/d:glass/i:glassing/3:glasses/s:glasses',None,None),
+              ('hello','hello','/helo/','used as a greeting','int. hello; hi','interjection',5,1,'cet4',None,1000,'p:helloed/d:helloed/i:helloing/3:hellos/s:hellos',None,None),
+              ('world','world','/wrld/','the earth','n. world; earth','noun',5,1,'cet4',None,500,'p:worlds/s:worlds',None,None),
+              ('dictionary','dictionary','/dkneri/','a reference book','n. dictionary','noun',3,1,'cet4',None,3000,'p:dictionaries/s:dictionaries',None,None),
+              ('apple','apple','/pl/','a round fruit','n. apple','noun',5,1,'cet4',None,2000,'p:apples/s:apples',None,None),
+              ('book','book','/bk/','a written work','n. book; books v. book','noun',5,1,'cet4',None,300,'p:booked/d:booked/i:booking/3:books/s:books',None,None),
+              ('computer','computer','/kmpjutr/','an electronic machine','n. computer','noun',5,1,'cet4',None,1500,'p:computers/s:computers',None,None),
+              ('language','language','/lngwd/','a system of communication','n. language','noun',5,1,'cet4',None,800,'p:languages/s:languages',None,None),
+              ('knowledge','knowledge','/nld/','information gained by experience','n. knowledge','noun',5,1,'cet4',None,2000,None,None,None),
+              ('learning','learning','/lrn/','the acquisition of knowledge','n. learning','noun',4,1,'cet4',None,3000,None,None,None),
+              ('glass','glass','/gls/','a hard transparent material','n. glass; cup','noun',5,1,'cet4',None,2000,'p:glass/d:glass/i:glassing/3:glasses/s:glasses',None,None),
           ]
           for w in words:
               c.execute('INSERT OR IGNORE INTO stardict (word,sw,phonetic,definition,translation,pos,collins,oxford,tag,bnc,frq,exchange,detail,audio) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)', w)
           conn.commit()
           conn.close()
-          print(f'ECDICT: OK')
-          "
+          print('ECDICT: OK')
+          PYEOF
           
-          # 创建成语词典示例数据
+          # Create idiom dictionary
           python3 -c "
           import sqlite3, os
           db_path = 'idiom.db'
