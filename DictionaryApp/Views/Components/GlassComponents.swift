@@ -155,7 +155,7 @@ struct GlassSegmentedControl: View {
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
                         .glassEffect(
-                            selected == index ? .regular : .regular.interactive,
+                            selected == index ? .regular : .regular.interactive(),
                             in: .rect(cornerRadius: 10)
                         )
                 }
@@ -193,7 +193,7 @@ struct GlassListRow<Content: View>: View {
         content
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
-            .glassBackgroundEffect(.regular, displayMode: .always)
+            .glassEffect(.regular, in: .rect(cornerRadius: 12))
     }
 }
 
@@ -210,9 +210,9 @@ extension View {
     }
     
     @ViewBuilder
-    func adaptiveGlassBackgroundEffect(_ effect: some GlassBackgroundEffect, displayMode: GlassBackgroundDisplayMode) -> some View {
+    func adaptiveGlassEffect() -> some View {
         if #available(iOS 26, *) {
-            self.glassBackgroundEffect(effect, displayMode: displayMode)
+            self.glassEffect()
         } else {
             self.background(.ultraThinMaterial)
         }
