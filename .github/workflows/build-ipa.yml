@@ -28,6 +28,28 @@ jobs:
         run: |
           brew install xcodegen
 
+      - name: 生成 App 图标
+        run: |
+          python3 << 'PYEOF'
+          from PIL import Image, ImageDraw, ImageFont
+          img = Image.new('RGBA', (1024, 1024), (220, 50, 50, 255))
+          draw = ImageDraw.Draw(img)
+          try:
+              font = ImageFont.truetype("/System/Library/Fonts/PingFang.ttc", 280)
+          except:
+              try:
+                  font = ImageFont.truetype("/Library/Fonts/Arial Unicode.ttf", 280)
+              except:
+                  font = ImageFont.load_default()
+          text = "词典"
+          bbox = draw.textbbox((0, 0), text, font=font)
+          x = (1024 - (bbox[2] - bbox[0])) // 2
+          y = (1024 - (bbox[3] - bbox[1])) // 2
+          draw.text((x, y), text, fill=(255, 255, 255, 255), font=font)
+          img.save('DictionaryApp/Assets.xcassets/AppIcon.appiconset/AppIcon.png')
+          print(f"Icon saved: {img.size}")
+          PYEOF
+
       - name: 生成词库数据
         run: |
           cd DictionaryApp/Resources
