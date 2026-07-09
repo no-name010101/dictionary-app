@@ -3,148 +3,260 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 56;
+	objectVersion = 77;
 	objects = {
 
-/* ========== PBBuildFile ========== */
+/* Begin PBBuildFile section */
 
-		1A0001 /* DictionaryApp.swift in Sources */ = {isa = PBBuildFile; fileRef = 2A0001; };
-		1A0002 /* DatabaseService.swift in Sources */ = {isa = PBBuildFile; fileRef = 2A0002; };
-		1A0003 /* PronunciationService.swift in Sources */ = {isa = PBBuildFile; fileRef = 2A0003; };
-		1A0004 /* WordEntry.swift in Sources */ = {isa = PBBuildFile; fileRef = 2A0004; };
-		1A0005 /* DatabaseConfig.swift in Sources */ = {isa = PBBuildFile; fileRef = 2A0005; };
-		1A0006 /* GlassComponents.swift in Sources */ = {isa = PBBuildFile; fileRef = 2A0006; };
-		1A0007 /* MainTabView.swift in Sources */ = {isa = PBBuildFile; fileRef = 2A0007; };
-		1A0008 /* SearchView.swift in Sources */ = {isa = PBBuildFile; fileRef = 2A0008; };
-		1A0009 /* WordDetailView.swift in Sources */ = {isa = PBBuildFile; fileRef = 2A0009; };
-		1A0010 /* DiscoverView.swift in Sources */ = {isa = PBBuildFile; fileRef = 2A0010; };
-		1A0011 /* FavoriteView.swift in Sources */ = {isa = PBBuildFile; fileRef = 2A0011; };
-		1A0012 /* SettingsView.swift in Sources */ = {isa = PBBuildFile; fileRef = 2A0012; };
-		1A0013 /* LaunchScreen.swift in Sources */ = {isa = PBBuildFile; fileRef = 2A0013; };
-		1A0014 /* Assets.xcassets in Resources */ = {isa = PBBuildFile; fileRef = 2A0014; };
-		1A0015 /* ecdict.db in Resources */ = {isa = PBBuildFile; fileRef = 2A0015; };
-		1A0016 /* idiom.db in Resources */ = {isa = PBBuildFile; fileRef = 2A0016; };
-		1A0017 /* xinhua.db in Resources */ = {isa = PBBuildFile; fileRef = 2A0017; };
+		71B2DC05C18EFE8E89AE186A /* DictionaryApp.swift in Sources */ = {isa = PBBuildFile; fileRef = 7F1FE353B94BA04E64F3FDF4; };
+		ECECEF2CB9842F773320B4FB /* DatabaseService.swift in Sources */ = {isa = PBBuildFile; fileRef = CD2FD4D31AF0D970F4829CDE; };
+		33A756FDE2C6334B70A8EDA0 /* PronunciationService.swift in Sources */ = {isa = PBBuildFile; fileRef = 3A8C91AE1EEF756EAD5B7C3C; };
+		CF9C5B8CC648D2175BB60730 /* WordEntry.swift in Sources */ = {isa = PBBuildFile; fileRef = E960EE167A43B1581D48B28F; };
+		FAF63933381FD2E672BF62C2 /* DatabaseConfig.swift in Sources */ = {isa = PBBuildFile; fileRef = 665177C4E72BCB9C1FB979C7; };
+		78F7C1333AE17602856FBF95 /* GlassComponents.swift in Sources */ = {isa = PBBuildFile; fileRef = 7B08B2006107F9994CC3BAC6; };
+		B677F6D0AF24CFDC41CF4058 /* MainTabView.swift in Sources */ = {isa = PBBuildFile; fileRef = 4541B70C25B33F0B9EDA00D1; };
+		1EBBF3CEB48E275F05BFA3E4 /* SearchView.swift in Sources */ = {isa = PBBuildFile; fileRef = 5202958DC3633B526AC30CA2; };
+		4D3B70069F959CCC0D98E7E5 /* WordDetailView.swift in Sources */ = {isa = PBBuildFile; fileRef = 31B35B8B8A786321FC046D8D; };
+		B345F8B4DD17CF09014DEB90 /* DiscoverView.swift in Sources */ = {isa = PBBuildFile; fileRef = 68A3E5674F6DCFFCBBCFDDCA; };
+		B8C4F4F31CB2944A81918257 /* FavoriteView.swift in Sources */ = {isa = PBBuildFile; fileRef = 9030481F698838B9FD94D4D6; };
+		4A7FB83110F33269885E552B /* SettingsView.swift in Sources */ = {isa = PBBuildFile; fileRef = D3615970BD92F8332800F309; };
+		9000B93566CC45B83548B5F8 /* LaunchScreen.swift in Sources */ = {isa = PBBuildFile; fileRef = 7701CDCFDFE9D0323F7C989A; };
+		6C5918CE0A1857C8EEED07C7 /* Assets.xcassets in Resources */ = {isa = PBBuildFile; fileRef = E9E8602E1AE44D3A7B45264E; };
+		6121637F883C1DE0438932C8 /* ecdict.db in Resources */ = {isa = PBBuildFile; fileRef = B03B88DF3AF1E8FCC95D5F9D; };
+		A105530217C93132F04707FE /* idiom.db in Resources */ = {isa = PBBuildFile; fileRef = 19205FC6CE5D771D82F79784; };
+		0037DB4FA4931E5FA0528B66 /* xinhua.db in Resources */ = {isa = PBBuildFile; fileRef = 805A24DB24D879394B23DB09; };
+/* End PBBuildFile section */
 
-/* ========== PBFileReference ========== */
+/* Begin PBFileReference section */
 
-		2A0001 /* DictionaryApp.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryApp.swift; sourceTree = "<group>"; };
-		2A0002 /* DatabaseService.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseService.swift; sourceTree = "<group>"; };
-		2A0003 /* PronunciationService.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationService.swift; sourceTree = "<group>"; };
-		2A0004 /* WordEntry.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = WordEntry.swift; sourceTree = "<group>"; };
-		2A0005 /* DatabaseConfig.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseConfig.swift; sourceTree = "<group>"; };
-		2A0006 /* GlassComponents.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = GlassComponents.swift; sourceTree = "<group>"; };
-		2A0007 /* MainTabView.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
-		2A0008 /* SearchView.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
-		2A0009 /* WordDetailView.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = WordDetailView.swift; sourceTree = "<group>"; };
-		2A0010 /* DiscoverView.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverView.swift; sourceTree = "<group>"; };
-		2A0011 /* FavoriteView.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteView.swift; sourceTree = "<group>"; };
-		2A0012 /* SettingsView.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
-		2A0013 /* LaunchScreen.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreen.swift; sourceTree = "<group>"; };
-		2A0014 /* Assets.xcassets */ = {isa = PBFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		2A0015 /* ecdict.db */ = {isa = PBFileReference; lastKnownFileType = file; path = ecdict.db; sourceTree = "<group>"; };
-		2A0016 /* idiom.db */ = {isa = PBFileReference; lastKnownFileType = file; path = idiom.db; sourceTree = "<group>"; };
-		2A0017 /* xinhua.db */ = {isa = PBFileReference; lastKnownFileType = file; path = xinhua.db; sourceTree = "<group>"; };
+		7F1FE353B94BA04E64F3FDF4 /* DictionaryApp.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = DictionaryApp.swift; sourceTree = "<group>"; };
+		CD2FD4D31AF0D970F4829CDE /* DatabaseService.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseService.swift; sourceTree = "<group>"; };
+		3A8C91AE1EEF756EAD5B7C3C /* PronunciationService.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = PronunciationService.swift; sourceTree = "<group>"; };
+		E960EE167A43B1581D48B28F /* WordEntry.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = WordEntry.swift; sourceTree = "<group>"; };
+		665177C4E72BCB9C1FB979C7 /* DatabaseConfig.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = DatabaseConfig.swift; sourceTree = "<group>"; };
+		7B08B2006107F9994CC3BAC6 /* GlassComponents.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = GlassComponents.swift; sourceTree = "<group>"; };
+		4541B70C25B33F0B9EDA00D1 /* MainTabView.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
+		5202958DC3633B526AC30CA2 /* SearchView.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = SearchView.swift; sourceTree = "<group>"; };
+		31B35B8B8A786321FC046D8D /* WordDetailView.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = WordDetailView.swift; sourceTree = "<group>"; };
+		68A3E5674F6DCFFCBBCFDDCA /* DiscoverView.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = DiscoverView.swift; sourceTree = "<group>"; };
+		9030481F698838B9FD94D4D6 /* FavoriteView.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = FavoriteView.swift; sourceTree = "<group>"; };
+		D3615970BD92F8332800F309 /* SettingsView.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		7701CDCFDFE9D0323F7C989A /* LaunchScreen.swift */ = {isa = PBFileReference; lastKnownFileType = sourcecode.swift; path = LaunchScreen.swift; sourceTree = "<group>"; };
+		E9E8602E1AE44D3A7B45264E /* Assets.xcassets */ = {isa = PBFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		B03B88DF3AF1E8FCC95D5F9D /* ecdict.db */ = {isa = PBFileReference; lastKnownFileType = file; path = ecdict.db; sourceTree = "<group>"; };
+		19205FC6CE5D771D82F79784 /* idiom.db */ = {isa = PBFileReference; lastKnownFileType = file; path = idiom.db; sourceTree = "<group>"; };
+		805A24DB24D879394B23DB09 /* xinhua.db */ = {isa = PBFileReference; lastKnownFileType = file; path = xinhua.db; sourceTree = "<group>"; };
+/* End PBFileReference section */
 
-/* ========== PBGroup ========== */
+/* Begin PBFrameworksBuildPhase section */
 
-		3A0001 /* DictionaryApp */ = {
+		3397DAB15540812BEE889B40 /* Frameworks */ = {
+			isa = PBFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBFrameworksBuildPhase section */
+
+/* Begin PBGroup section */
+
+		91C513A2F00181687AE84C07 /* DictionaryApp */ = {
 			isa = PBGroup;
 			children = (
-				2A0001 /* DictionaryApp.swift */,
-				3A0002 /* Models */,
-				3A0003 /* Views */,
-				3A0004 /* Services */,
-				3A0005 /* Resources */,
-				2A0014 /* Assets.xcassets */,
+				7F1FE353B94BA04E64F3FDF4 /* DictionaryApp.swift */,
+				630A8ED9556670439A02935B /* Models */,
+				1855FA585B2467AAC93F0EEB /* Views */,
+				31926492929ADD4024930760 /* Services */,
+				672FFD3E2E2A7D637E29CF1B /* Resources */,
+				E9E8602E1AE44D3A7B45264E /* Assets.xcassets */,
 			);
 			path = DictionaryApp;
 			sourceTree = "<group>";
 		};
-
-		3A0002 /* Models */ = {
+		630A8ED9556670439A02935B /* Models */ = {
 			isa = PBGroup;
 			children = (
-				2A0004 /* WordEntry.swift */,
-				2A0005 /* DatabaseConfig.swift */,
+				E960EE167A43B1581D48B28F /* WordEntry.swift */,
+				665177C4E72BCB9C1FB979C7 /* DatabaseConfig.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
 		};
-
-		3A0003 /* Views */ = {
+		1855FA585B2467AAC93F0EEB /* Views */ = {
 			isa = PBGroup;
 			children = (
-				3A0006 /* Components */,
-				2A0007 /* MainTabView.swift */,
-				2A0008 /* SearchView.swift */,
-				2A0009 /* WordDetailView.swift */,
-				2A0010 /* DiscoverView.swift */,
-				2A0011 /* FavoriteView.swift */,
-				2A0012 /* SettingsView.swift */,
-				2A0013 /* LaunchScreen.swift */,
+				6D8C611940E191F74F4CE647 /* Components */,
+				4541B70C25B33F0B9EDA00D1 /* MainTabView.swift */,
+				5202958DC3633B526AC30CA2 /* SearchView.swift */,
+				31B35B8B8A786321FC046D8D /* WordDetailView.swift */,
+				68A3E5674F6DCFFCBBCFDDCA /* DiscoverView.swift */,
+				9030481F698838B9FD94D4D6 /* FavoriteView.swift */,
+				D3615970BD92F8332800F309 /* SettingsView.swift */,
+				7701CDCFDFE9D0323F7C989A /* LaunchScreen.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
 		};
-
-		3A0004 /* Services */ = {
+		31926492929ADD4024930760 /* Services */ = {
 			isa = PBGroup;
 			children = (
-				2A0002 /* DatabaseService.swift */,
-				2A0003 /* PronunciationService.swift */,
+				CD2FD4D31AF0D970F4829CDE /* DatabaseService.swift */,
+				3A8C91AE1EEF756EAD5B7C3C /* PronunciationService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
 		};
-
-		3A0005 /* Resources */ = {
+		672FFD3E2E2A7D637E29CF1B /* Resources */ = {
 			isa = PBGroup;
 			children = (
-				2A0015 /* ecdict.db */,
-				2A0016 /* idiom.db */,
-				2A0017 /* xinhua.db */,
+				B03B88DF3AF1E8FCC95D5F9D /* ecdict.db */,
+				19205FC6CE5D771D82F79784 /* idiom.db */,
+				805A24DB24D879394B23DB09 /* xinhua.db */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
 		};
-
-		3A0006 /* Components */ = {
+		6D8C611940E191F74F4CE647 /* Components */ = {
 			isa = PBGroup;
 			children = (
-				2A0006 /* GlassComponents.swift */,
+				7B08B2006107F9994CC3BAC6 /* GlassComponents.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
 		};
+		B7FC2F151C30E2C76949FD7A /* Products */ = {
+			isa = PBGroup;
+			children = (
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F1B3A22A0EF6A49F7108FC42 /* Frameworks */ = {
+			isa = PBGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBGroup section */
 
-/* ========== PBProject ========== */
+/* Begin PBNativeTarget section */
 
-		4A0001 /* Project object */ = {
+		8A27F7CE219E5F26F85C7EFB /* DictionaryApp */ = {
+			isa = PBNativeTarget;
+			buildConfigurationList = 0525800946DA67B1EB56A5C0;
+			buildPhases = (
+				AD7EA8ADC8BC407C7F0755A7 /* Sources */,
+				3397DAB15540812BEE889B40 /* Frameworks */,
+				B70FFCC6A8A99871BBB221E6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = DictionaryApp;
+			productName = DictionaryApp;
+			productReference = 1353CAE7E5A15C227D7C1436;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBNativeTarget section */
+
+/* Begin PBProject section */
+
+		02C37491F91C8E8F9F60024E /* Project object */ = {
 			isa = PBProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1700;
-				LastUpgradeCheck = 1700;
+				LastSwiftUpdateCheck = 2600;
+				LastUpgradeCheck = 2600;
 				TargetAttributes = {
-					5A0001 = {
-						CreatedOnToolsVersion = 17.0;
+					8A27F7CE219E5F26F85C7EFB = {
+						CreatedOnToolsVersion = 26.0;
 						ProvisioningStyle = Automatic;
 					};
 				};
 			};
-			buildConfigurationList = 6A0001;
+			buildConfigurationList = 49711304D2F1BCB52B1ACB1D;
 			compatibilityVersion = "Xcode 16.0";
 			developmentRegion = "zh-Hans";
-			mainGroup = 3A0001;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				"zh-Hans",
+				en,
+				Base,
+			);
+			mainGroup = 91C513A2F00181687AE84C07;
 			targets = (
-				5A0001 /* DictionaryApp */,
+				8A27F7CE219E5F26F85C7EFB /* DictionaryApp */,
 			);
 		};
+/* End PBProject section */
 
-/* ========== XCBuildConfiguration ========== */
+/* Begin PBReferenceProxy section */
 
-		7A0001 /* Debug */ = {
+		1353CAE7E5A15C227D7C1436 /* DictionaryApp.app */ = {
+			isa = PBReferenceProxy;
+			fileType = application.generated.app;
+			path = DictionaryApp.app;
+			remoteRef = 096DBAA1D71A9972B9B33E68;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+/* End PBReferenceProxy section */
+
+/* Begin PBContainerItemProxy section */
+
+		096DBAA1D71A9972B9B33E68 /* PBContainerItemProxy */ = {
+			isa = PBContainerItemProxy;
+			containerPortal = 02C37491F91C8E8F9F60024E;
+			proxyType = 1;
+			remoteGlobalIDString = 8A27F7CE219E5F26F85C7EFB;
+			remoteInfo = DictionaryApp;
+		};
+/* End PBContainerItemProxy section */
+
+/* Begin PBResourcesBuildPhase section */
+
+		B70FFCC6A8A99871BBB221E6 /* Resources */ = {
+			isa = PBResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				6C5918CE0A1857C8EEED07C7 /* Assets.xcassets in Resources */,
+				6121637F883C1DE0438932C8 /* ecdict.db in Resources */,
+				A105530217C93132F04707FE /* idiom.db in Resources */,
+				0037DB4FA4931E5FA0528B66 /* xinhua.db in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBResourcesBuildPhase section */
+
+/* Begin PBSourcesBuildPhase section */
+
+		AD7EA8ADC8BC407C7F0755A7 /* Sources */ = {
+			isa = PBSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				71B2DC05C18EFE8E89AE186A /* DictionaryApp.swift in Sources */,
+				ECECEF2CB9842F773320B4FB /* DatabaseService.swift in Sources */,
+				33A756FDE2C6334B70A8EDA0 /* PronunciationService.swift in Sources */,
+				CF9C5B8CC648D2175BB60730 /* WordEntry.swift in Sources */,
+				FAF63933381FD2E672BF62C2 /* DatabaseConfig.swift in Sources */,
+				78F7C1333AE17602856FBF95 /* GlassComponents.swift in Sources */,
+				B677F6D0AF24CFDC41CF4058 /* MainTabView.swift in Sources */,
+				1EBBF3CEB48E275F05BFA3E4 /* SearchView.swift in Sources */,
+				4D3B70069F959CCC0D98E7E5 /* WordDetailView.swift in Sources */,
+				B345F8B4DD17CF09014DEB90 /* DiscoverView.swift in Sources */,
+				B8C4F4F31CB2944A81918257 /* FavoriteView.swift in Sources */,
+				4A7FB83110F33269885E552B /* SettingsView.swift in Sources */,
+				9000B93566CC45B83548B5F8 /* LaunchScreen.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+
+		00B7FB580606034AF19EF65A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -172,8 +284,7 @@
 			};
 			name = Debug;
 		};
-
-		7A0002 /* Release */ = {
+		FE52430F3BBC62BB6B6D5F01 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -202,7 +313,57 @@
 			};
 			name = Release;
 		};
+		D6563C9AD9FAFEB2259D7383 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		B4ED680CD82BEFD53DC01616 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				MACOSX_DEPLOYMENT_TARGET = 15.0;
+				SDKROOT = iphoneos;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+
+		0525800946DA67B1EB56A5C0 /* Build configuration list for PBNativeTarget "DictionaryApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				00B7FB580606034AF19EF65A /* Debug */,
+				FE52430F3BBC62BB6B6D5F01 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		49711304D2F1BCB52B1ACB1D /* Build configuration list for PBProject "DictionaryApp" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				D6563C9AD9FAFEB2259D7383 /* Debug */,
+				B4ED680CD82BEFD53DC01616 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
 
 	};
-	rootObject = 4A0001;
+	rootObject = 02C37491F91C8E8F9F60024E /* Project object */;
 }
