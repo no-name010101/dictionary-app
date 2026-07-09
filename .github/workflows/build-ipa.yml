@@ -30,24 +30,44 @@ jobs:
 
       - name: 生成 App 图标
         run: |
+          # Generate a simple 1024x1024 PNG icon using Python stdlib + sips
           python3 << 'PYEOF'
-          from PIL import Image, ImageDraw, ImageFont
-          img = Image.new('RGBA', (1024, 1024), (220, 50, 50, 255))
-          draw = ImageDraw.Draw(img)
-          try:
-              font = ImageFont.truetype("/System/Library/Fonts/PingFang.ttc", 280)
-          except:
-              try:
-                  font = ImageFont.truetype("/Library/Fonts/Arial Unicode.ttf", 280)
-              except:
-                  font = ImageFont.load_default()
-          text = "词典"
-          bbox = draw.textbbox((0, 0), text, font=font)
-          x = (1024 - (bbox[2] - bbox[0])) // 2
-          y = (1024 - (bbox[3] - bbox[1])) // 2
-          draw.text((x, y), text, fill=(255, 255, 255, 255), font=font)
-          img.save('DictionaryApp/Assets.xcassets/AppIcon.appiconset/AppIcon.png')
-          print(f"Icon saved: {img.size}")
+          import struct, zlib
+          
+          # Create a simple 1024x1024 red image with white "词典" text placeholder
+          # Use RGBA - red background
+          width, height = 1024, 1024
+          r, g, b, a = 220, 50, 50, 255  # Red background
+          
+          # Create raw pixel data
+          raw_data = b''
+          for y in range(height):
+              row = b''
+              for x in range(width):
+                  row += struct.pack('BBBB', r, g, b, a)
+              raw_data += row
+          
+          # Encode as PNG
+          def create_png(width, height, raw_data):
+              def chunk(chunk_type, data):
+                  c = chunk_type + data
+                  return struct.pack('>I', len(data)) + c + struct.pack('>I', zlib.crc32(c) & 0xffffffff)
+              
+              sig = b'\x89PNG\r\n\x1a\n'
+              ihdr = chunk(b'IHDR', struct.pack('>IIBBBBB', width, height, 8, 6, 0, 0, 0))
+              # Filter byte (0=None) per row + pixel data
+              filtered = b''
+              for y in range(height):
+                  filtered += b'\x00'  # filter type
+                  filtered += raw_data[y * width * 4:(y + 1) * width * 4]
+              idat = chunk(b'IDAT', zlib.compress(filtered))
+              iend = chunk(b'IEND', b'')
+              return sig + ihdr + idat + iend
+          
+          png = create_png(width, height, raw_data)
+          with open('DictionaryApp/Assets.xcassets/AppIcon.appiconset/AppIcon.png', 'wb') as f:
+              f.write(png)
+          print(f"Icon generated: {len(png)} bytes")
           PYEOF
 
       - name: 生成词库数据
