@@ -1,25 +1,9 @@
-# =============================================================
-#  GitHub Actions 工作流 - 自动编译 词典.ipa
-#  
-#  触发方式:
-#    1. 推送代码到 main 分支
-#    2. 在 GitHub 页面手动点击 "Run workflow"
-#
-#  输出: 词典.ipa 下载链接 (在 Artifacts 中)
-# =============================================================
-
 name: Build 词典.ipa
 
 on:
   push:
     branches: [ main ]
-  workflow_dispatch:  # 支持手动触发
-
-env:
-  SCHEME: "DictionaryApp"
-  PROJECT: "DictionaryApp.xcodeproj"
-  BUNDLE_ID: "com.dictionary.liquidglass"
-  IPA_NAME: "词典.ipa"
+  workflow_dispatch:
 
 jobs:
   build:
@@ -27,31 +11,28 @@ jobs:
     runs-on: macos-15
     
     steps:
-      # ---- 1. 检出代码 ----
       - name: 检出代码
         uses: actions/checkout@v4
 
-      # ---- 2. 选择 Xcode 版本 ----
       - name: 选择 Xcode 版本
         run: |
-          # Select Xcode 26.x for iOS 26 SDK
           sudo xcode-select -s /Applications/Xcode_26.3.app/Contents/Developer 2>/dev/null || \
           sudo xcode-select -s /Applications/Xcode_26.2.app/Contents/Developer 2>/dev/null || \
           sudo xcode-select -s /Applications/Xcode_26.1.app/Contents/Developer 2>/dev/null || \
           sudo xcode-select -s /Applications/Xcode_26.0.app/Contents/Developer 2>/dev/null || \
-          { echo "ERROR: No Xcode 26.x found"; ls /Applications/ | grep -i xcode; exit 1; }
+          { echo "ERROR: No Xcode 26.x found"; exit 1; }
           xcodebuild -version
           xcrun --sdk iphoneos --show-sdk-path
 
-      # ---- 3. 生成词库数据 ----
+      - name: 安装 xcodegen
+        run: |
+          brew install xcodegen
+
       - name: 生成词库数据
         run: |
           cd DictionaryApp/Resources
-          
-          # Remove placeholder files
           rm -f ecdict.db idiom.db xinhua.db
           
-          # Create ECDICT English-Chinese dictionary database
           python3 << 'PYEOF'
           import sqlite3
           conn = sqlite3.connect('ecdict.db')
@@ -84,7 +65,6 @@ jobs:
           print('ECDICT: OK')
           PYEOF
           
-          # Create idiom dictionary
           python3 << 'PYEOF'
           import sqlite3
           conn = sqlite3.connect('idiom.db')
@@ -101,7 +81,6 @@ jobs:
           print('Idiom: OK')
           PYEOF
           
-          # Create Xinhua dictionary
           python3 << 'PYEOF'
           import sqlite3
           conn = sqlite3.connect('xinhua.db')
@@ -121,19 +100,18 @@ jobs:
           echo "词库数据准备完成"
           ls -lh *.db
 
-      # ---- 4. 构建 Archive ----
+      - name: 用 xcodegen 生成项目
+        run: |
+          xcodegen generate
+          echo "项目生成完成"
+          ls -la DictionaryApp.xcodeproj/
+
       - name: 构建 Xcode Archive
         run: |
-          set -o pipefail
-          
-          # Verify project exists
-          ls -la DictionaryApp.xcodeproj/project.pbxproj || { echo "ERROR: project.pbxproj not found"; exit 1; }
-          
           mkdir -p build
-          
           xcodebuild archive \
             -project DictionaryApp.xcodeproj \
-            -scheme $SCHEME \
+            -scheme DictionaryApp \
             -configuration Release \
             -archivePath build/DictionaryApp.xcarchive \
             -destination "generic/platform=iOS" \
@@ -145,38 +123,16 @@ jobs:
             COMPILER_INDEX_STORE_ENABLE=NO \
             2>&1 | tee build/xcodebuild.log
 
-      # ---- 5. 导出 IPA ----
       - name: 导出 词典.ipa
         run: |
           mkdir -p build
-          
-          # 创建导出选项
-          cat > build/ExportOptions.plist << 'EOF'
-          <?xml version="1.0" encoding="UTF-8"?>
-          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-          <plist version="1.0">
-          <dict>
-              <key>method</key>
-              <string>debugging</string>
-              <key>signingStyle</key>
-              <string>automatic</string>
-              <key>compileBitcode</key>
-              <false/>
-          </dict>
-          </plist>
-          EOF
-          
-          # 从 Archive 中直接提取 App 并打包
           APP_PATH="build/DictionaryApp.xcarchive/Products/Applications/DictionaryApp.app"
           
           if [ -d "$APP_PATH" ]; then
-              echo "✅ 找到编译后的 .app"
-              
-              # 创建 IPA 结构
+              echo "找到编译后的 .app"
               mkdir -p build/ipa/Payload
               cp -R "$APP_PATH" build/ipa/Payload/
               
-              # 添加 iTunesMetadata
               cat > build/ipa/iTunesMetadata.plist << 'PLIST'
           <?xml version="1.0" encoding="UTF-8"?>
           <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -194,39 +150,47 @@ jobs:
           </plist>
           PLIST
               
-              # 打包为 IPA (不签名，供 TrollStore 使用)
               cd build/ipa
               zip -r "$GITHUB_WORKSPACE/词典.ipa" Payload iTunesMetadata.plist
               cd "$GITHUB_WORKSPACE"
-              
-              echo "✅ 词典.ipa 打包完成"
+              echo "词典.ipa 打包完成"
               ls -lh "词典.ipa"
           else
-              echo "❌ 未找到编译后的 .app，尝试直接导出..."
+              echo "未找到编译后的 .app，尝试直接导出..."
+              cat > build/ExportOptions.plist << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>debugging</string>
+              <key>signingStyle</key>
+              <string>automatic</string>
+              <key>compileBitcode</key>
+              <false/>
+          </dict>
+          </plist>
+          EOF
               
-              # 备用方案: 用 xcodebuild exportArchive
               xcodebuild -exportArchive \
                 -archivePath build/DictionaryApp.xcarchive \
                 -exportOptionsPlist build/ExportOptions.plist \
                 -exportPath build/export \
                 CODE_SIGN_IDENTITY="-" \
                 CODE_SIGNING_REQUIRED=NO \
-                CODE_SIGNING_ALLOWED=NO \
-                | xcpretty || true
+                CODE_SIGNING_ALLOWED=NO
               
-              # 找到导出的 IPA 并重命名
               find build/export -name "*.ipa" -exec cp {} "词典.ipa" \;
               
               if [ -f "词典.ipa" ]; then
-                  echo "✅ 词典.ipa 导出完成"
+                  echo "词典.ipa 导出完成"
                   ls -lh "词典.ipa"
               else
-                  echo "❌ IPA 导出失败"
+                  echo "IPA 导出失败"
                   exit 1
               fi
           fi
 
-      # ---- 6. 上传 Artifacts ----
       - name: 上传 词典.ipa
         uses: actions/upload-artifact@v4
         with:
@@ -234,25 +198,21 @@ jobs:
           path: 词典.ipa
           retention-days: 30
 
-      # ---- 7. 生成编译报告 ----
       - name: 编译报告
         if: always()
         run: |
           echo "========================================="
           echo "  词典 App 编译报告"
           echo "========================================="
-          echo ""
           if [ -f "词典.ipa" ]; then
-              echo "✅ 编译成功!"
-              echo "  IPA 文件: 词典.ipa"
-              echo "  大小: $(du -h 词典.ipa | cut -f1)"
+              echo "编译成功!"
+              echo "  IPA 大小: $(du -h 词典.ipa | cut -f1)"
               echo ""
               echo "安装方式:"
               echo "  1. TrollStore: 传输到 iPhone → 用 TrollStore 打开"
               echo "  2. AltStore:   通过 AltServer 侧载"
               echo "  3. Xcode:      直接安装到开发设备"
           else
-              echo "❌ 编译失败，请查看上方日志"
+              echo "编译失败，请查看上方日志"
           fi
-          echo ""
           echo "========================================="
