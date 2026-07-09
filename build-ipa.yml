@@ -1,0 +1,232 @@
+# =============================================================
+#  GitHub Actions 工作流 - 自动编译 词典.ipa
+#  
+#  触发方式:
+#    1. 推送代码到 main 分支
+#    2. 在 GitHub 页面手动点击 "Run workflow"
+#
+#  输出: 词典.ipa 下载链接 (在 Artifacts 中)
+# =============================================================
+
+name: Build 词典.ipa
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:  # 支持手动触发
+
+env:
+  SCHEME: "DictionaryApp"
+  PROJECT: "DictionaryApp.xcodeproj"
+  BUNDLE_ID: "com.dictionary.liquidglass"
+  IPA_NAME: "词典.ipa"
+
+jobs:
+  build:
+    name: 编译词典.ipa
+    runs-on: macos-15  # macOS 15 + Xcode 26 (支持 iOS 26 SDK)
+    
+    steps:
+      # ---- 1. 检出代码 ----
+      - name: 检出代码
+        uses: actions/checkout@v4
+
+      # ---- 2. 选择 Xcode 版本 ----
+      - name: 选择 Xcode 26
+        run: |
+          # 列出可用 Xcode 版本
+          ls /Applications/ | grep Xcode
+          # 选择 Xcode 26 (包含 iOS 26 SDK)
+          sudo xcode-select -s /Applications/Xcode-26.0.app/Contents/Developer 2>/dev/null || \
+          sudo xcode-select -s /Applications/Xcode-17.0.app/Contents/Developer 2>/dev/null || \
+          echo "使用默认 Xcode 版本"
+          xcodebuild -version
+          xcrun --sdk iphoneos --show-sdk-path
+
+      # ---- 3. 下载 ECDICT 词库 ----
+      - name: 下载 ECDICT 词库数据
+        run: |
+          cd DictionaryApp/Resources
+          
+          # 下载 ECDICT CSV 数据
+          echo "正在下载 ECDICT 词典数据..."
+          curl -L -o ecdict-csv.zip "https://github.com/skywind3000/ECDICT/releases/download/1.0.0/ecdict-csv-28.zip" || {
+            echo "⚠️ ECDICT 下载失败，使用空数据库"
+            python3 ../../csv_to_sqlite.py --csv /dev/null --db ecdict.db || true
+          }
+          
+          if [ -f ecdict-csv.zip ]; then
+            echo "解压 ECDICT 数据..."
+            unzip -o ecdict-csv.zip
+            echo "转换为 SQLite..."
+            python3 ../../csv_to_sqlite.py --csv stardict.csv --db ecdict.db || true
+            rm -f ecdict-csv.zip
+          fi
+          
+          # 创建成语词典示例数据
+          python3 -c "
+          import sqlite3, os
+          db_path = 'idiom.db'
+          if not os.path.exists(db_path) or os.path.getsize(db_path) < 1000:
+              conn = sqlite3.connect(db_path)
+              c = conn.cursor()
+              c.execute('CREATE TABLE IF NOT EXISTS idiom (word TEXT PRIMARY KEY, pinyin TEXT, definition TEXT, origin TEXT, example TEXT)')
+              idioms = [
+                  ('一心一意', 'yī xīn yī yì', '形容做事专心，一点也不马虎', '《三国志》', '他一心一意地钻研学问'),
+                  ('画龙点睛', 'huà lóng diǎn jīng', '比喻在关键处加上精辟的话', '唐·张彦远', '这句话起到了画龙点睛的作用'),
+                  ('守株待兔', 'shǒu zhū dài tù', '比喻不主动努力，而存侥幸心理', '《韩非子》', '不要守株待兔，要主动出击'),
+              ]
+              c.executemany('INSERT OR IGNORE INTO idiom VALUES (?,?,?,?,?)', idioms)
+              conn.commit()
+              conn.close()
+          "
+          
+          # 创建新华字典示例数据
+          python3 -c "
+          import sqlite3, os
+          db_path = 'xinhua.db'
+          if not os.path.exists(db_path) or os.path.getsize(db_path) < 1000:
+              conn = sqlite3.connect(db_path)
+              c = conn.cursor()
+              c.execute('CREATE TABLE IF NOT EXISTS xinhua (character TEXT PRIMARY KEY, pinyin TEXT, radical TEXT, strokes INTEGER, definition TEXT, variants TEXT)')
+              chars = [
+                  ('词', 'cí', '讠', 7, '语言里最小的可以独立运用的单位', ''),
+                  ('典', 'diǎn', '八', 8, '可以作为依据的书籍', ''),
+                  ('学', 'xué', '子', 8, '效法，获得知识', ''),
+              ]
+              c.executemany('INSERT OR IGNORE INTO xinhua VALUES (?,?,?,?,?,?)', chars)
+              conn.commit()
+              conn.close()
+          "
+          
+          echo "✅ 词库数据准备完成"
+          ls -lh *.db 2>/dev/null || echo "数据库文件列表"
+
+      # ---- 4. 构建 Archive ----
+      - name: 构建 Xcode Archive
+        run: |
+          set -o pipefail
+          
+          xcodebuild archive \
+            -project DictionaryApp/$PROJECT \
+            -scheme $SCHEME \
+            -configuration Release \
+            -archivePath build/DictionaryApp.xcarchive \
+            -destination "generic/platform=iOS" \
+            -sdk iphoneos \
+            CODE_SIGN_IDENTITY="-" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            DEVELOPMENT_TEAM="" \
+            COMPILER_INDEX_STORE_ENABLE=NO \
+            | xcpretty || true
+
+      # ---- 5. 导出 IPA ----
+      - name: 导出 词典.ipa
+        run: |
+          # 创建导出选项
+          cat > build/ExportOptions.plist << 'EOF'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>method</key>
+              <string>debugging</string>
+              <key>signingStyle</key>
+              <string>automatic</string>
+              <key>compileBitcode</key>
+              <false/>
+          </dict>
+          </plist>
+          EOF
+          
+          # 从 Archive 中直接提取 App 并打包
+          APP_PATH="build/DictionaryApp.xcarchive/Products/Applications/DictionaryApp.app"
+          
+          if [ -d "$APP_PATH" ]; then
+              echo "✅ 找到编译后的 .app"
+              
+              # 创建 IPA 结构
+              mkdir -p build/ipa/Payload
+              cp -R "$APP_PATH" build/ipa/Payload/
+              
+              # 添加 iTunesMetadata
+              cat > build/ipa/iTunesMetadata.plist << 'PLIST'
+          <?xml version="1.0" encoding="UTF-8"?>
+          <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+          <plist version="1.0">
+          <dict>
+              <key>bundleIdentifier</key>
+              <string>com.dictionary.liquidglass</string>
+              <key>bundleShortVersionString</key>
+              <string>1.0.0</string>
+              <key>bundleVersion</key>
+              <string>1</string>
+              <key>itemName</key>
+              <string>词典</string>
+          </dict>
+          </plist>
+          PLIST
+              
+              # 打包为 IPA (不签名，供 TrollStore 使用)
+              cd build/ipa
+              zip -r "$GITHUB_WORKSPACE/词典.ipa" Payload iTunesMetadata.plist
+              cd "$GITHUB_WORKSPACE"
+              
+              echo "✅ 词典.ipa 打包完成"
+              ls -lh "词典.ipa"
+          else
+              echo "❌ 未找到编译后的 .app，尝试直接导出..."
+              
+              # 备用方案: 用 xcodebuild exportArchive
+              xcodebuild -exportArchive \
+                -archivePath build/DictionaryApp.xcarchive \
+                -exportOptionsPlist build/ExportOptions.plist \
+                -exportPath build/export \
+                CODE_SIGN_IDENTITY="-" \
+                CODE_SIGNING_REQUIRED=NO \
+                CODE_SIGNING_ALLOWED=NO \
+                | xcpretty || true
+              
+              # 找到导出的 IPA 并重命名
+              find build/export -name "*.ipa" -exec cp {} "词典.ipa" \;
+              
+              if [ -f "词典.ipa" ]; then
+                  echo "✅ 词典.ipa 导出完成"
+                  ls -lh "词典.ipa"
+              else
+                  echo "❌ IPA 导出失败"
+                  exit 1
+              fi
+          fi
+
+      # ---- 6. 上传 Artifacts ----
+      - name: 上传 词典.ipa
+        uses: actions/upload-artifact@v4
+        with:
+          name: 词典-ipa
+          path: 词典.ipa
+          retention-days: 30
+
+      # ---- 7. 生成编译报告 ----
+      - name: 编译报告
+        if: always()
+        run: |
+          echo "========================================="
+          echo "  词典 App 编译报告"
+          echo "========================================="
+          echo ""
+          if [ -f "词典.ipa" ]; then
+              echo "✅ 编译成功!"
+              echo "  IPA 文件: 词典.ipa"
+              echo "  大小: $(du -h 词典.ipa | cut -f1)"
+              echo ""
+              echo "安装方式:"
+              echo "  1. TrollStore: 传输到 iPhone → 用 TrollStore 打开"
+              echo "  2. AltStore:   通过 AltServer 侧载"
+              echo "  3. Xcode:      直接安装到开发设备"
+          else
+              echo "❌ 编译失败，请查看上方日志"
+          fi
+          echo ""
+          echo "========================================="
