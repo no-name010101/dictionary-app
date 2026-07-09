@@ -27,6 +27,7 @@ struct DictionaryApp: App {
 }
 
 // MARK: - App State
+@MainActor
 class AppState: ObservableObject {
     @Published var isOnline: Bool = true
     @Published var searchHistory: [String] = []
