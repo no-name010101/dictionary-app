@@ -34,17 +34,14 @@ jobs:
       # ---- 2. 选择 Xcode 版本 ----
       - name: 选择 Xcode 版本
         run: |
-          # 列出可用 Xcode 版本
-          ls /Applications/ 2>/dev/null | grep -i xcode || echo "No Xcode in /Applications"
-          # 尝试选择最新版 Xcode
-          sudo xcode-select -s /Applications/Xcode-26.0.app/Contents/Developer 2>/dev/null || \
-          sudo xcode-select -s /Applications/Xcode-17.0.app/Contents/Developer 2>/dev/null || \
-          sudo xcode-select -s /Applications/Xcode-16.4.app/Contents/Developer 2>/dev/null || \
-          sudo xcode-select -s /Applications/Xcode-16.3.app/Contents/Developer 2>/dev/null || \
-          sudo xcode-select -s /Applications/Xcode-16.2.app/Contents/Developer 2>/dev/null || \
-          echo "使用默认 Xcode 版本"
+          # Select Xcode 26.x for iOS 26 SDK
+          sudo xcode-select -s /Applications/Xcode_26.3.app/Contents/Developer 2>/dev/null || \
+          sudo xcode-select -s /Applications/Xcode_26.2.app/Contents/Developer 2>/dev/null || \
+          sudo xcode-select -s /Applications/Xcode_26.1.app/Contents/Developer 2>/dev/null || \
+          sudo xcode-select -s /Applications/Xcode_26.0.app/Contents/Developer 2>/dev/null || \
+          { echo "ERROR: No Xcode 26.x found"; ls /Applications/ | grep -i xcode; exit 1; }
           xcodebuild -version
-          xcrun --sdk iphoneos --show-sdk-path 2>/dev/null || echo "iOS SDK check skipped"
+          xcrun --sdk iphoneos --show-sdk-path
 
       # ---- 3. 生成词库数据 ----
       - name: 生成词库数据
@@ -146,7 +143,7 @@ jobs:
             CODE_SIGNING_ALLOWED=NO \
             DEVELOPMENT_TEAM="" \
             COMPILER_INDEX_STORE_ENABLE=NO \
-            2>&1 | tee build/xcodebuild.log | xcpretty
+            2>&1 | tee build/xcodebuild.log
 
       # ---- 5. 导出 IPA ----
       - name: 导出 词典.ipa
