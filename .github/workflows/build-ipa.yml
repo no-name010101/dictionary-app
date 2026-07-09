@@ -132,6 +132,8 @@ jobs:
           # Verify project exists
           ls -la DictionaryApp.xcodeproj/project.pbxproj || { echo "ERROR: project.pbxproj not found"; exit 1; }
           
+          mkdir -p build
+          
           xcodebuild archive \
             -project DictionaryApp.xcodeproj \
             -scheme $SCHEME \
