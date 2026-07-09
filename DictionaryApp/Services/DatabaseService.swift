@@ -16,9 +16,9 @@ class DatabaseService: ObservableObject {
     @Published var totalEntries: Int = 0
     
     private var db: OpaquePointer?
-    private var ecdictDB: OpaquePointer?
-    private var idiomDB: OpaquePointer?
-    private var xinhuaDB: OpaquePointer?
+    nonisolated(unsafe) private var ecdictDB: OpaquePointer?
+    nonisolated(unsafe) private var idiomDB: OpaquePointer?
+    nonisolated(unsafe) private var xinhuaDB: OpaquePointer?
     
     enum DatabaseStatus {
         case notLoaded
