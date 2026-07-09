@@ -14,7 +14,7 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "D6B5F4D02C8A1A1A00A3B5F4"
+               BlueprintIdentifier = "8A27F7CE219E5F26F85C7EFB"
                BuildableName = "DictionaryApp.app"
                BlueprintName = "DictionaryApp"
                ReferencedContainer = "container:DictionaryApp.xcodeproj">
@@ -36,7 +36,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D6B5F4D02C8A1A1A00A3B5F4"
+            BlueprintIdentifier = "8A27F7CE219E5F26F85C7EFB"
             BuildableName = "DictionaryApp.app"
             BlueprintName = "DictionaryApp"
             ReferencedContainer = "container:DictionaryApp.xcodeproj">
@@ -53,7 +53,7 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "D6B5F4D02C8A1A1A00A3B5F4"
+            BlueprintIdentifier = "8A27F7CE219E5F26F85C7EFB"
             BuildableName = "DictionaryApp.app"
             BlueprintName = "DictionaryApp"
             ReferencedContainer = "container:DictionaryApp.xcodeproj">
